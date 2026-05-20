@@ -1,0 +1,58 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Foods Collection Security Rules
+    match /foods/{foodId} {
+      allow read, write: if true;
+    }
+
+    // Coupons Collection Security Rules
+    match /coupons/{couponId} {
+      allow read, write: if true;
+    }
+
+    // Orders Collection Security Rules (Customers write, admin reads/writes)
+    match /orders/{orderId} {
+      allow read, write: if true;
+    }
+
+    // Validations
+    function isValidFood(data) {
+      return data.product_name is string && data.product_name.size() > 0 && data.product_name.size() <= 100
+        && data.category is string && data.category.size() > 0
+        && data.full_plate_price is number && data.full_plate_price >= 0
+        && (data.has_half_plate == false || (data.has_half_plate == true && data.half_plate_price is number && data.half_plate_price >= 0))
+        && data.stock_status in ['instock', 'out_of_stock']
+        && (data.image_url is string)
+        && (data.description is string);
+    }
+
+    function isValidCoupon(data) {
+      return data.code is string && data.code.size() > 0 && data.code.size() <= 30
+        && data.discount_type in ['percentage', 'fixed_amount']
+        && data.discount_value is number && data.discount_value >= 0
+        && data.active_status is bool;
+    }
+
+    function isValidOrder(data) {
+      return data.customer_name is string && data.customer_name.size() > 0
+        && data.customer_phone is string && data.customer_phone.size() > 0
+        && data.grand_total is number && data.grand_total >= 0;
+    }
+  }
+}

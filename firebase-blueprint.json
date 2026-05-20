@@ -1,0 +1,74 @@
+{
+  "entities": {
+    "FoodProduct": {
+      "title": "Food Product",
+      "description": "A food item available for order from the menu",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "The unique document ID" },
+        "product_name": { "type": "string", "description": "Name of the food product" },
+        "category": { "type": "string", "description": "Category like Biryani, Starters, Desserts, etc." },
+        "full_plate_price": { "type": "number", "description": "Price for a full size serving" },
+        "half_plate_price": { "type": "number", "description": "Price for a half size serving" },
+        "has_half_plate": { "type": "boolean", "description": "Is this product available in half portions?" },
+        "description": { "type": "string", "description": "Details about the food item Ingredients, spices, etc." },
+        "image_url": { "type": "string", "description": "HTTP or HTTPS URL to the food image" },
+        "rating": { "type": "number", "description": "Rating score from 1.0 to 5.0" },
+        "stock_status": { "type": "string", "enum": ["instock", "out_of_stock"], "description": "Stock status" },
+        "is_popular": { "type": "boolean", "description": "True if this product should appear in Favorites of the city" },
+        "is_featured": { "type": "boolean", "description": "Is featured product" },
+        "is_bogo": { "type": "boolean", "description": "Is Buy One Get One Free offer active for this item" },
+        "display_order": { "type": "number", "description": "Ordering layout level" }
+      },
+      "required": ["product_name", "category", "full_plate_price", "stock_status"]
+    },
+    "Coupon": {
+      "title": "Coupon",
+      "description": "A discount coupon applied during checkout",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "code": { "type": "string", "description": "The unique coupon code e.g. CODE101" },
+        "description": { "type": "string", "description": "Details about coupon terms" },
+        "discount_type": { "type": "string", "enum": ["percentage", "fixed_amount"] },
+        "discount_value": { "type": "number", "description": "Amount or percentage of discount" },
+        "min_order_amount": { "type": "number", "description": "Minimum order total required to apply" },
+        "product_specific": { "type": "string", "description": "Optional name or tag match e.g. #101" },
+        "active_status": { "type": "boolean", "description": "Is this coupon enabled" }
+      },
+      "required": ["code", "discount_type", "discount_value", "active_status"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Log of user checkout request completed",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "customer_name": { "type": "string" },
+        "customer_phone": { "type": "string" },
+        "delivery_address": { "type": "string" },
+        "items": { "type": "array", "description": "Ordered foods and configurations" },
+        "total_before_discount": { "type": "number" },
+        "discount_amount": { "type": "number" },
+        "grand_total": { "type": "number" },
+        "applied_coupon": { "type": "string" },
+        "created_at": { "type": "string" }
+      },
+      "required": ["customer_name", "customer_phone", "grand_total"]
+    }
+  },
+  "firestore": {
+    "/foods/{foodId}": {
+      "schema": "FoodProduct",
+      "description": "Menu food products catalog"
+    },
+    "/coupons/{couponId}": {
+      "schema": "Coupon",
+      "description": "Promotional codes list"
+    },
+    "/orders/{orderId}": {
+      "schema": "Order",
+      "description": "Log of client checkouts"
+    }
+  }
+}

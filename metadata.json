@@ -1,0 +1,6 @@
+{
+  "name": "Kwik Bites Tech Team",
+  "description": "Kwik Bites tech-driven premium gourmet food delivery app with customizable portions, Buy 1 Get 1 free (BOGO) deals, interactive Swiggy-style coupons, real-time Firebase syncing, and direct WhatsApp checkouts located at BTM, Bangalore.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
