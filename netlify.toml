@@ -1,0 +1,7 @@
+# Netlify Configuration File
+# This ensures that client-side SPA routing works properly upon direct navigation or reload.
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

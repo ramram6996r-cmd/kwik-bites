@@ -121,6 +121,7 @@ export default function App() {
 
   // Cart operations
   const handleAddToCart = (product: FoodProduct, selectedSize: "half" | "full" = "full") => {
+    const increment = product.is_bogo ? 2 : 1;
     setCartItems(prev => {
       const existingIndex = prev.findIndex(item => 
         item.product.id === product.id && item.selectedSize === selectedSize
@@ -131,18 +132,20 @@ export default function App() {
         const updated = [...prev];
         updated[existingIndex] = {
           ...updated[existingIndex],
-          quantity: updated[existingIndex].quantity + 1
+          quantity: updated[existingIndex].quantity + increment
         };
         return updated;
       } else {
         // Add new selection
-        return [...prev, { product, selectedSize, quantity: 1 }];
+        return [...prev, { product, selectedSize, quantity: increment }];
       }
     });
     // Do not open cart automatically to show additions
   };
 
   const handleUpdateQuantity = (product: FoodProduct, selectedSize: "half" | "full", delta: number) => {
+    const step = product.is_bogo ? 2 : 1;
+    const adjustedDelta = delta * step;
     setCartItems(prev => {
       const targetIndex = prev.findIndex(item => 
         item.product.id === product.id && item.selectedSize === selectedSize
@@ -151,7 +154,7 @@ export default function App() {
       if (targetIndex === -1) return prev;
 
       const updated = [...prev];
-      const newQty = updated[targetIndex].quantity + delta;
+      const newQty = updated[targetIndex].quantity + adjustedDelta;
 
       if (newQty <= 0) {
         updated.splice(targetIndex, 1);
